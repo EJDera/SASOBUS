@@ -629,15 +629,13 @@ public class OntologyBuilder {
 	/**
 	 * A method for finding important terms. 
 	 * @param nn, true if searching for nouns
-	 * @param adj, true if searching for adjectives
-	 * @param alpha,
-	 * @param beta, 
+	 * @param adj, true if searching for adjectives 
 	 * @throws IOException 
 	 * @throws IllegalSpanException 
 	 * @throws JSONException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void findTerms(boolean nn, boolean adj, boolean vrb, double alpha, double beta) throws ClassNotFoundException, JSONException, IllegalSpanException, IOException {
+	public void findTerms(boolean nn, boolean adj, boolean vrb) throws ClassNotFoundException, JSONException, IllegalSpanException, IOException {
 
 		Framework.log("Finding terms");
 
@@ -646,8 +644,14 @@ public class OntologyBuilder {
 		HashMap<String, Double> verbs = new HashMap<String, Double>(); //actions
 
 		double fractionNouns = fraction[0];
-		double fractionAdj = fraction[1]; 
-		double fractionVerb = fraction[2]; 	
+		double alphaNouns = fraction[1];
+		double betaNouns = fraction[2];
+		double fractionAdj = fraction[3]; 
+		double alphaAdj = fraction[4];
+		double betaAdj = fraction[5];
+		double fractionVerb = fraction[6];
+		double alphaVerb = fraction[7];
+		double betaVerb = fraction[8];
 		
 		HashMap<String, String> nounContext = new HashMap<String, String>(); 
 		HashMap<String, String> verbContext = new HashMap<String, String>();
@@ -938,7 +942,7 @@ public class OntologyBuilder {
 			Double[] scores = new Double[verbs.size()];
 			int i = 0;
 			for (String w : verbs.keySet()) {
-				double score = alpha * (DPs.get(w) / maxDP) + beta * (DCs.get(w) / maxDC);
+				double score = alphaVerb * (DPs.get(w) / maxDP) + betaVerb * (DCs.get(w) / maxDC);
 				verbs.put(w, score);
 				scores[i] = score;
 				i++;
@@ -1002,10 +1006,9 @@ public class OntologyBuilder {
 			nouns.keySet().removeAll(synonymsAccepted);
 			Double[] scores = new Double[nouns.size()];
 			int i = 0;
-
 			for (String w : nouns.keySet())
 			{
-				double score = alpha * (DPs.get(w) / maxDP) + beta * (DCs.get(w) / maxDC);
+				double score = alphaNouns * (DPs.get(w) / maxDP) + betaNouns * (DCs.get(w) / maxDC);
 				nouns.put(w, score);
 				scores[i] = score;
 				i++;
@@ -1013,7 +1016,7 @@ public class OntologyBuilder {
 
 			//Find the threshold value to get only the top %n of the terms
 			Arrays.sort(scores);
-			double ind = fractionAdj * nouns.size();
+			double ind = fractionNouns * nouns.size();
 			int index = (int) ind;
 			double scoreThreshold = scores[nouns.size() - 1 - index];
 
@@ -1082,7 +1085,7 @@ public class OntologyBuilder {
 			Double[] scores = new Double[adjectives.size()];
 			int i = 0;
 			for (String w : adjectives.keySet()) {
-				double score = alpha * (DPs.get(w) / maxDP) + beta * (DCs.get(w) / maxDC);
+				double score = alphaAdj * (DPs.get(w) / maxDP) + betaAdj * (DCs.get(w) / maxDC);
 				adjectives.put(w, score);
 				scores[i] = score;
 				i++;

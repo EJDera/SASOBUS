@@ -55,13 +55,19 @@ public class MainOntoBuild {
 		String domain = "restaurant";
 
 		// set the fractions
-		double[] fraction = new double[3];	
-		fraction[0]=0.10;	//fraction nouns
-		fraction[1]=0.17; 	//fraction adjectives  
-		fraction[2]=0.14; //fraction verbs
+		double[] fraction = new double[9];	
+		fraction[0]=0.11;	//fraction nouns
+		fraction[1]=0.50;   //alpha for nouns
+		fraction[2]=0.50;   //beta for nouns
+		fraction[3]=0.14; 	//fraction adjectives
+		fraction[4]=0.10;   //alpha for adjectives
+		fraction[5]=0.90;   //beta for adjectives
+		fraction[6]=0.10;   //fraction verbs
+		fraction[7]=1.00;   //alpha for verbs
+		fraction[8]=0.00;   //beta for verbs
 
 		//set the threshold 
-		double threshold = 0.2;
+		double threshold = 0.20;
 
 		/* Initialise the semi-automatic ontology builder. */
 		OntologyBuilder build = new OntologyBuilder(base, aspectCategories, domain, threshold, 1.0, fraction, true);
@@ -80,11 +86,10 @@ public class MainOntoBuild {
 			e.printStackTrace();
 		}
 
-		double alpha=0.3; double beta=0.7;
 		boolean verbs=true; boolean nouns=true; boolean adj=true;
 
 		/* Find important terms and add them to the ontology. */
-		build.findTerms(nouns, adj, verbs, alpha, beta);
+		build.findTerms(nouns, adj, verbs);
 
 		/* Get the stats. */
 		int[] stats = build.getStats();
